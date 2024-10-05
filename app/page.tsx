@@ -1,30 +1,18 @@
 import SelectReason from "./_components/SelectReason";
-import qs from "qs";
 
 const fetchContent = async () => {
-  const query = qs.stringify({
-    populate: {
-      image: {
-        fields: ["url"],
-      },
+  const res = await fetch(`${process.env.NEXT_API}/api/page-contents`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${process.env.NEXT_API_TOKEN}`,
     },
   });
-  const res = await fetch(
-    `${process.env.NEXT_API}/api/page-contents?${query}`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${process.env.NEXT_API_TOKEN}`,
-      },
-    }
-  );
   const data = await res.json();
   return data;
 };
 
 export default async function Home() {
   const pageContent = await fetchContent();
-
   if (!pageContent) return null;
   return (
     <div className="w-full min-h-dvh">
