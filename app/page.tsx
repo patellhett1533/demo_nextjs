@@ -1,5 +1,18 @@
 import SelectReason from "./_components/SelectReason";
 
+export const revalidate = 10;
+
+export async function generateStaticParams() {
+  const res = await fetch(`${process.env.NEXT_API}/api/page-contents`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${process.env.NEXT_API_TOKEN}`,
+    },
+  });
+  const data = await res.json();
+  return data;
+}
+
 const fetchContent = async () => {
   const res = await fetch(`${process.env.NEXT_API}/api/page-contents`, {
     method: "GET",
