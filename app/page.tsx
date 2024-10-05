@@ -1,33 +1,47 @@
+"use client";
+import { useEffect } from "react";
 import SelectReason from "./_components/SelectReason";
+import React from "react";
 
-export const revalidate = 10;
-
-export async function generateStaticParams() {
-  const res = await fetch(`${process.env.NEXT_API}/api/page-contents`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${process.env.NEXT_API_TOKEN}`,
-    },
-  });
-  const data = await res.json();
-  return data;
+interface Props {
+  head: string;
+  title: string;
+  subtitle: string;
+  reason_data: {
+    reason_title: string;
+    reason_desc: string;
+    reason_image: {
+      name: string;
+      width: number;
+      height: number;
+      url: string;
+    }[];
+  }[];
 }
+export default function Home() {
+  const [pageContent, setPageContent] = React.useState<Props[] | null>(null);
 
-const fetchContent = async () => {
-  const res = await fetch(`${process.env.NEXT_API}/api/page-contents`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${process.env.NEXT_API_TOKEN}`,
-    },
-  });
-  const data = await res.json();
-  return data;
-};
+  const fetchContent = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_STRAPI}/api/page-contents`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`,
+        },
+      }
+    );
+    const data = await res.json();
+    return data;
+  };
 
-export default async function Home() {
-  const pageContent = await fetchContent();
-  console.log(JSON.stringify(pageContent));
-  if (!pageContent) return null;
+  useEffect(() => {
+    fetchContent().then((data) => {
+      setPageContent(data);
+    });
+  }, []);
+
+  if (!pageContent && pageContent === null) return <></>;
   return (
     <div className="w-full min-h-dvh">
       <div className="flex flex-col  items-center justify-center h-dvh">
