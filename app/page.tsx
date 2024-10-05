@@ -26,6 +26,7 @@ const fetchContent = async () => {
 
 export default async function Home() {
   const pageContent = await fetchContent();
+  console.log(JSON.stringify(pageContent));
   if (!pageContent) return null;
   return (
     <div className="w-full min-h-dvh">
